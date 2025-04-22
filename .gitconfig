@@ -1,0 +1,146 @@
+[core]
+	# Meaning when git needs to resolve conflicts
+	# it will open vscode for you to select which changes to use.
+	# Make sure you have installed code in your path for this to work.
+	editor = code --wait
+	# Default if $HOME/.config/git/ignore
+	# Makes more sense to have the same name as normal .gitinore file
+	# Here you can put for example .DS_Store for globally ignoring them
+	excludesfile = $HOME/.gitignore
+[color]
+	ui = true
+[pull]
+  # When pulling from online it will use rebase strategy.
+	# (instead of fast-forward merge) by default.
+	# This reduces amount of conflicts to resolve when pulling from remote.
+	rebase = true
+	autostash = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+	# Push a rebased branch, somewhat safely
+	# `git please`
+	please = push --force-with-lease --force-if-includes
+	# Silence the annoying header
+	# `git st`
+	st = status -s
+	# Pretty history of commits
+	# `git lol`
+	lol = log --oneline --graph --all
+	# `git skit`
+	skit = !git fetch origin && git rebase origin/master
+	# git grep and display output in vscode
+	cgrep = "!f() { git grep \"$@\" | code -; }; f"
+	# git branch and display output in vscode
+	cbranch = "!f() { git branch \"$@\" | code -; }; f"
+	# git log and display output in vscode
+	clog = "!f() { git lol \"$@\" | code -; }; f"
+	# search in all branches for the thing
+	grepa = "!f() { git grep \"$@\" $(git rev-list --all); }; f"
+	cgrepa = "!f() { git grepa \"$@\" | code -; }; f"
+	# prune-merged = !git branch --merged master | grep -v '^\*' | grep -v ' master$' | xargs -n 1 git branch -d
+	prune-merged = "!bash $HOME/scripts/prune-merged.bash" #
+	find = ""
+
+# Reuse Recorded Resolution
+# Helps you automatically resolve the same conflicts if they occur multiple times
+# By rememvering how you fixed them before
+[rerere]
+	# When accepting changes during rebase.
+	# Reuse those changes instead of asking for every single commit.
+	# Whenever git can figure out tha
+	enabled = true
+	autoupdate = true
+[http]
+	# Dunno had an issue once that was resolved by increasing this.
+	postBuffer = 524288000
+[grep]
+	lineNumber = true
+	ignoreCase = true
+	wordRegexp = true
+
+# Ui Display Stuff
+[column]
+	# Display branches in columns
+	# Depending on your terminal size.
+	# Instead of a single long column.
+	ui = auto
+[branch]
+  # Reverse committerdate
+	# If you rebase it will be more recent
+	# This will display branches
+	# by the time updated instead of by name
+	sort = -committerdate
+[tag]
+  # When Diplaying Tags,
+	# make sure v0.1.1 -> -> v0.1.2 -> v0.1.11
+	# is displayed in correct order
+	sort = version:refname
+[init]
+  # Silence warning about default branch being master
+	defaultBranch = main
+
+# Difference Algorithms
+# Used When comparing changes
+[diff]
+  # Patience / Histogram
+	# Histogram is the newest and "best"
+  algorithm = histogram
+  colorMoved = plain
+	# Subtle, the diff header replaces "a" and "b" with "---" and "+++"
+	mnemonicPrefix = true
+	renames = true
+
+[push]
+  # If your local branch is tracking a remote branch of the same name
+	# if there's no tracking relationship, the push will fail with a helpful message
+	# instead of making assumptions
+	# simple / matching / current / upstream / nothing
+	default = simple
+	# When running `git push` and the branch
+	# Does not exist on gitlab / github,
+	# Automagically create the branch upstream.
+	autoSetupRemote = true
+	# Git will automatically push annotated tags that are reachable
+	# From the commits you're pushing
+	# -- but only if you haven't already explicitly listed the tags
+	followTags = true
+
+[rebase]
+  # Automatically rearranges and marks commits with fixup! or squash!
+	# in their commit message to be squashed into the appropriate target commit
+	# during an interactive rebase
+	# Useful when you want to clean up your commit history before merging or pushing a feature branch.
+  autoSquash = true
+	# Automatically stashes local changes before starting a rebase and re-applies them afterward.
+	# Convenient when you want to rebase without worrying about temporarily stashing your in-progress changes.
+	autoStash = true
+	# Helps keep remote or tracking branches in sync with the rewritten commit history,
+	# especially in collaborative environments.
+	updateRefs = true
+
+# why the hell not?
+[help]
+  autocorrect = prompt
+
+# a matter of taste
+
+# Only turn these on if you think they are good
+# Can have gotchas if you enable in a repo after
+# You've already been working in it for a while
+[fetch]
+  # Keeps your local remote-tracking branches clean.
+  prune = true
+	# Can improve performance with large repos.
+  writeCommitGraph = true
+	# Fetches submodules only when necessary.
+  recurseSubmodules = on-demand
+	# pruneTags = true
+	# Fetch from all remotes (if you have multiple upstream remotes)
+	# all = true
+
+[merge]
+  # conflictsyle = zdiff3

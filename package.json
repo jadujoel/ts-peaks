@@ -1,0 +1,16 @@
+{
+  "name": "itcallsmei.com",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@types/web": "0.0.222",
+    "can-start-audio-context": "0.0.12",
+    "peaks.js": "3.4.2",
+    "sharp": "0.34.1"
+  }
+}
